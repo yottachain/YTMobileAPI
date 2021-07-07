@@ -23,7 +23,6 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
-	"syscall"
 	"unsafe"
 )
 
@@ -320,13 +319,13 @@ func ripemd160Sum(bytes []byte) []byte {
 }
 
 func main() {
-	version, err := syscall.GetVersion()
-	if err != nil {
-
-	}
-	fmt.Printf("%d.%d(%d)", byte(version), uint8(version>>8), version>>16)
+	//version, err := syscall.GetVersion()
+	//if err != nil {
+	//
+	//}
+	//fmt.Printf("%d.%d(%d)", byte(version), uint8(version>>8), version>>16)
 
 	//GetPubKey("yottanewsabc")
 	//Register("yottanewsabc","5HyFZaX8TecHEp5wigibc8yPbadypGUCGWjBf5Yo3xtmN4mPJnn")
-	UploadObject("http://localhost:8080", "E:\\安装包\\node-v14.15.1-x64.msi", "test", "yottanewsabc", "5HyFZaX8TecHEp5wigibc8yPbadypGUCGWjBf5Yo3xtmN4mPJnn")
+	UploadObject("http://117.161.72.89:8080", "E:\\安装包\\node-v14.15.1-x64.msi", "test", "yottanewsabc", "5HyFZaX8TecHEp5wigibc8yPbadypGUCGWjBf5Yo3xtmN4mPJnn")
 }
