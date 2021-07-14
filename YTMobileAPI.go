@@ -6,23 +6,28 @@ import (
 	"crypto/sha256"
 	"crypto/tls"
 	"encoding/json"
+	"flag"
 	"fmt"
+	"github.com/electricbubble/guia2"
 	ecrypto "github.com/ethereum/go-ethereum/crypto"
 	"github.com/mr-tron/base58"
 	"github.com/sirupsen/logrus"
 	"github.com/yottachain/YTCoreService/api"
 	"github.com/yottachain/YTCoreService/env"
 	"github.com/yottachain/YTMobileAPI/aes"
+	"github.com/yottachain/YTMobileAPI/router"
 	"github.com/yottachain/YTMobileAPI/tools"
 	"golang.org/x/crypto/ripemd160"
 	"io"
 	"io/ioutil"
+	"log"
 	"mime/multipart"
 	"net/http"
 	"net/http/cookiejar"
 	"os"
 	"path/filepath"
 	"strings"
+	"time"
 	"unsafe"
 )
 
@@ -318,6 +323,35 @@ func ripemd160Sum(bytes []byte) []byte {
 	return h.Sum(nil)
 }
 
+func checkErr(err error, msg ...string) {
+	if err == nil {
+		return
+	}
+
+	var output string
+	if len(msg) != 0 {
+		output = msg[0] + " "
+	}
+	output += err.Error()
+	log.Fatalln(output)
+}
+
+func waitForElement(driver *guia2.Driver, bySelector guia2.BySelector) (element *guia2.Element, err error) {
+	var ce error
+	exists := func(d *guia2.Driver) (bool, error) {
+		element, ce = d.FindElement(bySelector)
+		if ce == nil {
+			return true, nil
+		}
+		// 如果直接返回 error 将直接终止 `driver.Wait`
+		return false, nil
+	}
+	if err = driver.Wait(exists); err != nil {
+		return nil, fmt.Errorf("%s: %w", err.Error(), ce)
+	}
+	return
+}
+
 func main() {
 	//version, err := syscall.GetVersion()
 	//if err != nil {
@@ -327,5 +361,19 @@ func main() {
 
 	//GetPubKey("yottanewsabc")
 	//Register("yottanewsabc","5HyFZaX8TecHEp5wigibc8yPbadypGUCGWjBf5Yo3xtmN4mPJnn")
-	UploadObject("http://117.161.72.89:8080", "E:\\安装包\\node-v14.15.1-x64.msi", "test", "yottanewsabc", "5HyFZaX8TecHEp5wigibc8yPbadypGUCGWjBf5Yo3xtmN4mPJnn")
+	//UploadObject("http://117.161.72.89:8080", "E:\\安装包\\node-v14.15.1-x64.msi", "test", "yottanewsabc", "5HyFZaX8TecHEp5wigibc8yPbadypGUCGWjBf5Yo3xtmN4mPJnn")
+
+	//err := http.ListenAndServe("0.0.0.0:8989",nil)
+	//if err!= nil {
+	//	logrus.Panicf("http listen failed")
+	//}
+	logrus.Infof(time.Now().Format("2006-01-02 15:04:05") + "strart ......")
+	flag.Parse()
+	router := router.InitRouter()
+
+	err1 := router.Run(":5551")
+	if err1 != nil {
+		panic(err1)
+	}
+	logrus.Info("strart ......")
 }
